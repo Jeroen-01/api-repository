@@ -1,0 +1,185 @@
+openapi: 3.1.0
+info:
+  title: Orders API
+  version: '1.0'
+  summary: Public API to implement functionality surrounding Orders
+  description: The _Orders API_ currently supports required functionality to either list all orders or create new orders.
+  contact:
+    name: Jeroen Douma
+    email: jdqn@integration-odyssey.cc
+    url: 'https://integration-odyssey.cc'
+  license:
+    name: MIT
+    url: 'https://license.integration-odyssey.cc'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /orders:
+    get:
+      summary: List Orders
+      description: List Orders
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    x-stoplight:
+                      id: dg7vls6htejhp
+                    items:
+                      $ref: '#/components/schemas/Order'
+                      x-stoplight:
+                        id: vvx47wo4dacsw
+      operationId: getOrders
+      x-stoplight:
+        id: z6ggltop4erx1
+    post:
+      summary: Create Order
+      description: Create Order
+      operationId: postOrders
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/Problem'
+      x-stoplight:
+        id: y8qc1i9c7mf1h
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+            examples:
+              Example 1:
+                value:
+                  customerId: f0dabf14-e291-49ea-9380-791d81b3831b
+components:
+  schemas:
+    Order:
+      title: Order
+      type: object
+      x-stoplight:
+        id: c87lhkpcq32p1
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: Unique Identifier of the Order
+          x-stoplight:
+            id: g41mtx3fi980p
+          format: uuid
+          example: b7f56acb-c847-4b60-9f87-5f0d07d29f25
+          readOnly: true
+        customerId:
+          type: string
+          x-stoplight:
+            id: nt4o2l00qtxxs
+          format: uuid
+          example: f0dabf14-e291-49ea-9380-791d81b3831b
+          description: Unique Identifier of the Customer that placed the Order
+        createdAt:
+          type: string
+          x-stoplight:
+            id: vtcmlf8a8l1ik
+          format: date-time
+          example: '2023-10-10T09:09:21Z'
+          description: Date and Time at which the Order was created
+          readOnly: true
+        items:
+          type: array
+          x-stoplight:
+            id: 3emuhlc04lvxv
+          items:
+            $ref: '#/components/schemas/Product'
+            x-stoplight:
+              id: qp3k3zsswratx
+      required:
+        - customerId
+    Product:
+      title: Product
+      x-stoplight:
+        id: 2sp6g9ven8amt
+      type: object
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: by9sr40gks8np
+          format: uuid
+          example: 8c3b14af-ab44-42d2-88f2-411b0ce54d09
+        name:
+          type: string
+          x-stoplight:
+            id: 1y6fedrjvdjt4
+          example: Hypercleaner 3000
+        category:
+          x-stoplight:
+            id: kczov6iwyzpqe
+          enum:
+            - vacuumCleaners
+            - homeAppliances
+          readOnly: true
+  responses:
+    Problem:
+      description: |-
+        Problem Details Object in accordance with the specification proposed in [RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807).
+
+        Deviation from proposed implementation, as the Problem Details Object described here returns Content Type application/json
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              type:
+                type: string
+                x-stoplight:
+                  id: 1qhx376an8bof
+                description: |-
+                  A URI reference [RFC3986](https://datatracker.ietf.org/doc/html/rfc3986) that identifies the problem type. 
+                  This specification encourages that, when dereferenced, it provide human-readable documentation for the problem type (e.g., using HTML [W3C.REC-html5-20141028]). 
+                  When this member is not present, its value is assumed to be "about:blank".
+              title:
+                type: string
+                x-stoplight:
+                  id: 4uvdhd1ebqnov
+                description: |-
+                  A short, human-readable summary of the problem
+                        type.  It SHOULD NOT change from occurrence to occurrence of the
+                        problem, except for purposes of localization
+              status:
+                type: number
+                x-stoplight:
+                  id: fa0aeeuwjxrca
+                description: |-
+                  The HTTP status code ([RFC7231], Section 6)
+                        generated by the origin server for this occurrence of the problem.
+              detail:
+                type: string
+                x-stoplight:
+                  id: 9s0834yefzjxw
+                description: |-
+                  A human-readable explanation specific to this
+                        occurrence of the problem.
+              instance:
+                type: string
+                x-stoplight:
+                  id: mtqh7cxsab9qv
+                description: |-
+                  A URI reference that identifies the specific
+                        occurrence of the problem.  It may or may not yield further
+                        information if dereferenced.
+          examples:
+            Example 1:
+              value:
+                type: 'https://example.com/problems/cannot-create-orders'
+                title: You cannot create orders.
+                status: 400
+                detail: You cannot create orders
+                instance: /orders
+tags:
+  - name: orders
+    description: orders
